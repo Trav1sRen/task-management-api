@@ -6,6 +6,10 @@ import { UserRepository } from './user.repository';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
+import * as config from 'config';
+import { IConfig } from 'config';
+
+const jwtConfig = <IConfig>config.get('jwt');
 
 @Module({
   imports: [
@@ -14,9 +18,9 @@ import { JwtStrategy } from './jwt.strategy';
       { defaultStrategy: 'jwt' },
     ), // PassportModule is what makes AuthGuard() works
     JwtModule.register({
-      secret: 'topSecret51',
+      secret: process.env.JWT_SECRET || jwtConfig.get('secret'),
       signOptions: {
-        expiresIn: 3600,
+        expiresIn: jwtConfig.get('expiresIn'),
       },
     }),
     TypeOrmModule.forFeature([UserRepository]),
