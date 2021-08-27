@@ -3,18 +3,24 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskRepository } from './task.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './task.entity';
-import { TaskStatus } from './task-status.enum';
 import { GetTaskFilterDto } from './dto/get-task-filter.dto';
 import { User } from 'src/auth/user.entity';
+import { TaskStatusRepository } from './task.status.repository';
 
 @Injectable()
 export class TasksService {
   constructor(
     @InjectRepository(TaskRepository) private taskRepository: TaskRepository,
+    @InjectRepository(TaskStatusRepository)
+    private taskStatusRepository: TaskStatusRepository,
   ) {}
 
   getTasks(filterDto: GetTaskFilterDto, user: User): Promise<Task[]> {
     return this.taskRepository.getTasks(filterDto, user);
+  }
+
+  getStatusDict() {
+    return this.taskStatusRepository.getStatusDict();
   }
 
   createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
@@ -43,12 +49,17 @@ export class TasksService {
 
   async updateTaskStatusById(
     id: number,
-    status: TaskStatus,
+    statusName: string,
     user: User,
   ): Promise<Task> {
     const task = await this.getTaskById(id, user);
-    task.status = status;
+
+    const { statusId } = (
+      await this.taskStatusRepository.find({ statusName })
+    )[0];
+    task.status = statusId;
     await task.save();
+
     return task;
   }
 }

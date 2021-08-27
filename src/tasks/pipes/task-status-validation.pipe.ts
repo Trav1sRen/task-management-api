@@ -1,23 +1,21 @@
 import { BadRequestException, PipeTransform } from '@nestjs/common';
-import { TaskStatus } from '../task-status.enum';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TaskStatusRepository } from '../task.status.repository';
+import * as _ from 'lodash';
 
 export class TaskStatusValidationPipe implements PipeTransform {
-  readonly allowedStatus = [
-    TaskStatus.OPEN,
-    TaskStatus.IN_PROGRESS,
-    TaskStatus.DONE,
-  ];
+  constructor(
+    @InjectRepository(TaskStatusRepository)
+    private taskStatusRepository: TaskStatusRepository,
+  ) {}
 
-  transform(value: any): any {
-    if (!this.isStatusValid(value.toUpperCase())) {
-      throw new BadRequestException(`"${value}" is not a valid status`);
+  transform(statusName: string): string {
+    const found = this.taskStatusRepository.find({ statusName });
+
+    if (_.isEmpty(found)) {
+      throw new BadRequestException(`"${statusName}" is not a valid status`);
     }
 
-    return value;
-  }
-
-  private isStatusValid(status) {
-    const idx = this.allowedStatus.indexOf(status);
-    return idx !== -1;
+    return statusName;
   }
 }

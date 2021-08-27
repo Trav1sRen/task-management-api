@@ -5,10 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskRepository } from './task.repository';
 import { PassportModule } from '@nestjs/passport';
 import { AuthModule } from '../auth/auth.module';
+import { TaskStatusRepository } from './task.status.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([TaskRepository]),
+    TypeOrmModule.forFeature([TaskRepository, TaskStatusRepository]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     /**
      * Have to import AuthModule becos JwtStrategy is the provider of AuthModule,

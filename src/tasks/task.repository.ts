@@ -1,7 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Task } from './task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
-import { TaskStatus } from './task-status.enum';
 import { GetTaskFilterDto } from './dto/get-task-filter.dto';
 import { User } from 'src/auth/user.entity';
 import { InternalServerErrorException, Logger } from '@nestjs/common';
@@ -50,7 +49,7 @@ export class TaskRepository extends Repository<Task> {
     const task = new Task();
     task.title = title;
     task.description = description;
-    task.status = TaskStatus.OPEN;
+    task.status = 0;
     task.user = user;
 
     try {
