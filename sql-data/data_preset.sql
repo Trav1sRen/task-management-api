@@ -1,12 +1,13 @@
-DROP TABLE IF EXISTS status_dict;
+DROP TABLE IF EXISTS task_status;
 
-CREATE TABLE status_dict
+-- Dict table to store task status mapping
+CREATE TABLE task_status
 (
     statusId   INT PRIMARY KEY NOT NULL,
     statusName TEXT            NOT NULL
 );
 
-INSERT INTO status_dict (statusId, statusName)
+INSERT INTO task_status (statusId, statusName)
 VALUES (0, 'Open'),
        (1, 'In Progress'),
        (2, 'Done');
