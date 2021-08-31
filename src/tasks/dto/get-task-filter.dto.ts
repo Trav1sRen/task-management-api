@@ -1,15 +1,9 @@
-import { IsIn, IsNotEmpty, IsOptional } from 'class-validator';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TaskStatusRepository } from '../task.status.repository';
+import { IsNotEmpty, IsOptional, Validate } from 'class-validator';
+import { ValidStatusRule } from '../validators/task-status.validator';
 
 export class GetTaskFilterDto {
-  constructor(
-    @InjectRepository(TaskStatusRepository)
-    private taskStatusRepository: TaskStatusRepository,
-  ) {}
-
   @IsOptional()
-  @IsIn()
+  @Validate(ValidStatusRule)
   status: string;
 
   @IsOptional()

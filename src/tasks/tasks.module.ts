@@ -6,6 +6,7 @@ import { TaskRepository } from './task.repository';
 import { PassportModule } from '@nestjs/passport';
 import { AuthModule } from '../auth/auth.module';
 import { TaskStatusRepository } from './task.status.repository';
+import { ValidStatusRule } from './validators/task-status.validator';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { TaskStatusRepository } from './task.status.repository';
     AuthModule,
   ],
   controllers: [TasksController],
-  providers: [TasksService],
+  providers: [TasksService, ValidStatusRule],
 })
 export class TasksModule {}
