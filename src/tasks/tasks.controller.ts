@@ -79,7 +79,7 @@ export class TasksController {
   updateTaskStatusById(
     @Param('id') id: number,
     @Body(ValidationPipe)
-    updateTaskStatusDto: UpdateTaskStatusDto,
+    { status }: UpdateTaskStatusDto,
     @GetUser() user: User,
   ): Promise<Task> {
     return this.taskService.updateTaskStatusById(id, status, user);
