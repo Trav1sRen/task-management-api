@@ -4,6 +4,7 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTaskFilterDto } from './dto/get-task-filter.dto';
 import { User } from 'src/auth/user.entity';
 import { InternalServerErrorException, Logger } from '@nestjs/common';
+import { TaskStatus } from './task.status.entity';
 
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
@@ -13,12 +14,16 @@ export class TaskRepository extends Repository<Task> {
     { status, search }: GetTaskFilterDto,
     { id, username }: User,
   ): Promise<Task[]> {
-    const query = this.createQueryBuilder('task');
+    const query = this.createQueryBuilder('task').leftJoinAndSelect(
+      TaskStatus,
+      'task_status',
+      'task.status = task_status.statusId',
+    );
 
     query.andWhere('task.userId = :id', { id });
 
     if (status) {
-      query.andWhere('task.status = :status', { status });
+      query.andWhere('task_status.statusName = :status', { status });
     }
 
     if (search) {
